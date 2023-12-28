@@ -1,9 +1,8 @@
-﻿namespace Library.API.Models
-{
-    public class AuthorForUpdate
-    {  
-        public string? FirstName { get; set; }
+﻿namespace Library.API.Models;
 
-        public string? LastName { get; set; }
-    }
+public class AuthorForUpdate
+{  
+    public string? FirstName { get; set; }
+
+    public string? LastName { get; set; }
 }
