@@ -1,15 +1,13 @@
-﻿using Asp.Versioning;
-using AutoMapper;
-using Library.API.Attributes;
+﻿using AutoMapper;
 using Library.API.Models;
 using Library.API.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
+using Library.API.Attributes;
 
 namespace Library.API.Controllers
 {
-   
-     [Route("api/v{version:apiVersion}/authors/{authorId}/books")]
-    
+    [Route("api/v{version:apiVersion}/authors/{authorId}/books")]
     [ApiController]
     [Produces("application/json", 
         "application/xml")]

@@ -4,13 +4,12 @@ using Library.API.Services;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
-using Asp.Versioning;
 
 namespace Library.API.Controllers
-{ 
-     [Route("api/v{version:apiVersion}/authors")]  
+{
+    [Route("api/v{version:apiVersion}/authors")]
     [ApiController]
- //   [ApiExplorerSettings(GroupName = "LibraryOpenAPISpecificationAuthors")]
+   // [ApiExplorerSettings(GroupName = "LibraryOpenAPISpecificationAuthors")]
     public class AuthorsController : ControllerBase
     {
         private readonly IAuthorRepository _authorsRepository;
@@ -81,9 +80,7 @@ namespace Library.API.Controllers
         /// <param name="authorId">The id of the author you want to get</param>
         /// <param name="patchDocument">The set of operations to apply to the author</param>
         /// <returns>An ActionResult of type Author</returns>
-        /// <remarks>
-        /// Sample request (this request updates the author's **first name**):    
-        /// 
+        /// <remarks>Sample request (this request updates the author's **first name**)  
         ///     PATCH /authors/authorId
         ///     [ 
         ///         {
@@ -92,7 +89,7 @@ namespace Library.API.Controllers
         ///             "value": "new first name" 
         ///         } 
         ///     ] 
-        /// </remarks>
+        /// </remarks> 
         [HttpPatch("{authorId}")]
         public async Task<ActionResult<Author>> UpdateAuthor(
             Guid authorId,

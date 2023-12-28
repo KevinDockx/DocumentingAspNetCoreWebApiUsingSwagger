@@ -13,7 +13,7 @@ namespace Library.API.Authentication
         public BasicAuthenticationHandler(
             IOptionsMonitor<AuthenticationSchemeOptions> options,
             ILoggerFactory logger,
-            UrlEncoder encoder )
+            UrlEncoder encoder)
             : base(options, logger, encoder)
         {
         }
@@ -55,5 +55,5 @@ namespace Library.API.Authentication
                     AuthenticateResult.Fail("Invalid Authorization header"));
             }
         }
-    } 
-} 
+    }
+}

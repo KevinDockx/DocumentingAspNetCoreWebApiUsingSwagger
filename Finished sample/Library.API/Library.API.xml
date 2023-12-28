@@ -18,9 +18,7 @@
             <param name="authorId">The id of the author you want to get</param>
             <param name="patchDocument">The set of operations to apply to the author</param>
             <returns>An ActionResult of type Author</returns>
-            <remarks>
-            Sample request (this request updates the author's **first name**):    
-            
+            <remarks>Sample request (this request updates the author's **first name**)  
                 PATCH /authors/authorId
                 [ 
                     {
@@ -29,7 +27,7 @@
                         "value": "new first name" 
                     } 
                 ] 
-            </remarks>
+            </remarks> 
         </member>
         <member name="M:Library.API.Controllers.AuthorsControllerSecondVersion.GetAuthors">
             <summary>
@@ -63,18 +61,6 @@
             <returns>An ActionResult of type Book</returns>
             <response code="422">Validation error</response>
         </member>
-        <member name="T:Library.API.Migrations.InitialMigration">
-            <inheritdoc />
-        </member>
-        <member name="M:Library.API.Migrations.InitialMigration.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:Library.API.Migrations.InitialMigration.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:Library.API.Migrations.InitialMigration.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
-            <inheritdoc />
-        </member>
         <member name="T:Library.API.Models.Author">
             <summary>
             An author with Id, FirstName and LastName fields
@@ -87,7 +73,7 @@
         </member>
         <member name="P:Library.API.Models.Author.FirstName">
             <summary>
-            The first name of the   
+            The first name of the  
             **author**
             </summary>
         </member>

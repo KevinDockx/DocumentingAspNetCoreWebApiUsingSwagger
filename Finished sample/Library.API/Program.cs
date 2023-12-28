@@ -1,5 +1,6 @@
 using Asp.Versioning;
 using Asp.Versioning.ApiExplorer;
+using Library.API;
 using Library.API.Authentication;
 using Library.API.Contexts;
 using Library.API.OperationFilters;
@@ -35,8 +36,6 @@ builder.Services.AddControllers(configure =>
         new ProducesResponseTypeAttribute(
             StatusCodes.Status401Unauthorized));
 
-    configure.Filters.Add(new AuthorizeFilter());
-
 }).AddNewtonsoftJson(setupAction =>
 {
     setupAction.SerializerSettings.ContractResolver =
@@ -58,7 +57,14 @@ builder.Services.Configure<MvcOptions>(configureOptions =>
             jsonOutputFormatter.SupportedMediaTypes.Remove("text/json");
         }
     }
-}); 
+
+    configureOptions.Filters.Add(new AuthorizeFilter());
+});
+
+// configure basic authentication 
+builder.Services.AddAuthentication("Basic")
+    .AddScheme<AuthenticationSchemeOptions, 
+    BasicAuthenticationHandler>("Basic", null);
 
 builder.Services.AddDbContext<LibraryContext>(
     dbContextOptions => dbContextOptions.UseSqlite(
@@ -70,69 +76,21 @@ builder.Services.AddScoped<IBookRepository, BookRepository>();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 builder.Services.AddApiVersioning(setupAction =>
-                    {
-                        setupAction.ReportApiVersions = true;
-                    })
-                .AddMvc()
-                .AddApiExplorer(
-                    setupAction =>
-                    {
-                        setupAction.DefaultApiVersion = new ApiVersion(1, 0);
-                        setupAction.AssumeDefaultVersionWhenUnspecified = true;
-                        setupAction.SubstituteApiVersionInUrl = true;
-                    });
-
+{
+    setupAction.ReportApiVersions = true;
+}).AddMvc()
+.AddApiExplorer(setupAction =>
+{
+    setupAction.DefaultApiVersion = new ApiVersion(1, 0);
+    setupAction.AssumeDefaultVersionWhenUnspecified = true;
+    setupAction.SubstituteApiVersionInUrl = true;
+});
 
 var apiVersionDescriptionProvider = builder.Services.BuildServiceProvider()
   .GetService<IApiVersionDescriptionProvider>();
 
 builder.Services.AddSwaggerGen(setupAction =>
     {
-        setupAction.AddSecurityDefinition("basicAuth", 
-            new OpenApiSecurityScheme()
-            {
-                Type = SecuritySchemeType.Http,
-                Scheme = "basic",
-                Description = "Input your username and password to access this API"
-            });
-
-        setupAction.AddSecurityRequirement(
-            new OpenApiSecurityRequirement
-            {
-                {
-                    new OpenApiSecurityScheme
-                    {
-                        Reference = new OpenApiReference {
-                            Type = ReferenceType.SecurityScheme,
-                            Id = "basicAuth" }
-                    }, new List<string>() 
-                }
-            });
-
-        foreach (var description in
-            apiVersionDescriptionProvider.ApiVersionDescriptions)
-        {
-            setupAction.SwaggerDoc( 
-                $"{description.GroupName}",
-                new()
-                {
-                    Title = "Library API",
-                    Version = description.ApiVersion.ToString(),
-                    Description = "Through this API you can access authors and their books.",
-                    Contact = new()
-                    {
-                        Email = "kevin.dockx@gmail.com",
-                        Name = "Kevin Dockx",
-                        Url = new Uri("https://www.twitter.com/KevinDockx")
-                    },
-                    License = new()
-                    {
-                        Name = "MIT License",
-                        Url = new Uri("https://opensource.org/licenses/MIT")
-                    }
-                });
-        } 
-
         //setupAction.SwaggerDoc("LibraryOpenAPISpecificationAuthors", new()
         //{
         //    Title = "Library API (Authors)",
@@ -167,7 +125,52 @@ builder.Services.AddSwaggerGen(setupAction =>
         //        Name = "MIT License",
         //        Url = new Uri("https://opensource.org/licenses/MIT")
         //    }
-        //}); 
+        //});
+
+
+        foreach (var description in
+            apiVersionDescriptionProvider.ApiVersionDescriptions)
+        {
+            setupAction.SwaggerDoc(
+                $"{description.GroupName}",
+                new()
+                {
+                    Title = "Library API",
+                    Version = description.ApiVersion.ToString(),
+                    Description = "Through this API you can access authors and their books.",
+                    Contact = new()
+                    {
+                        Email = "kevin.dockx@gmail.com",
+                        Name = "Kevin Dockx",
+                        Url = new Uri("https://www.twitter.com/KevinDockx")
+                    },
+                    License = new()
+                    {
+                        Name = "MIT License",
+                        Url = new Uri("https://opensource.org/licenses/MIT")
+                    }
+                });
+        }
+
+        setupAction.AddSecurityDefinition("basicAuth", 
+            new ()
+            {
+                Type = SecuritySchemeType.Http,
+                Scheme = "basic",
+                Description = "Input your username and password to access this API"
+            });
+
+        setupAction.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "basicAuth" }
+                        }, new List<string>() }
+                });
+
 
         //setupAction.ResolveConflictingActions(apiDescriptions =>
         //{
@@ -175,7 +178,7 @@ builder.Services.AddSwaggerGen(setupAction =>
         //});
 
         setupAction.OperationFilter<GetBookOperationFilter>();
-        setupAction.OperationFilter<CreateBookOperationFilter>();  
+        setupAction.OperationFilter<CreateBookOperationFilter>();
 
         var xmlCommentsFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
         var xmlCommentsFullPath = Path.Combine(
@@ -184,21 +187,18 @@ builder.Services.AddSwaggerGen(setupAction =>
         setupAction.IncludeXmlComments(xmlCommentsFullPath);
     });
 
-// configure basic authentication 
-builder.Services.AddAuthentication("Basic")
-    .AddScheme<AuthenticationSchemeOptions, 
-        BasicAuthenticationHandler>("Basic", null);
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 
-app.UseStaticFiles();
-
 app.UseSwagger();
 
 app.UseSwaggerUI(setupAction =>
-{ 
+{
+    //setupAction.SwaggerEndpoint("/swagger/LibraryOpenAPISpecificationAuthors/swagger.json", 
+    //        "Library API (Authors)");
+    //setupAction.SwaggerEndpoint("/swagger/LibraryOpenAPISpecificationBooks/swagger.json", 
+    //        "Library API (Books)");
     var descriptions = app.DescribeApiVersions();
     foreach (var description in descriptions)
     {
@@ -206,7 +206,7 @@ app.UseSwaggerUI(setupAction =>
             $"/swagger/{description.GroupName}/swagger.json",
             description.GroupName.ToUpperInvariant());
     }
-
+    setupAction.RoutePrefix = string.Empty;
     setupAction.DefaultModelExpandDepth(2);
     setupAction.DefaultModelRendering(
         Swashbuckle.AspNetCore.SwaggerUI.ModelRendering.Model);
@@ -215,24 +215,18 @@ app.UseSwaggerUI(setupAction =>
     setupAction.EnableDeepLinking();
     setupAction.DisplayOperationId();
 
-    setupAction.InjectStylesheet("/assets/custom-ui.css");
+    setupAction.InjectStylesheet("/Assets/custom-ui.css");
 
-    setupAction.IndexStream = () => typeof(Program)
-        .Assembly.GetManifestResourceStream(
-            "Library.API.EmbeddedAssets.index.html");
+    setupAction.IndexStream = ()
+              => typeof(Program).Assembly
+              .GetManifestResourceStream("Library.API.EmbeddedAssets.index.html");
 
-    //setupAction.SwaggerEndpoint("/swagger/LibraryOpenAPISpecification/swagger.json",
-    //    "Library API");
-    //setupAction.SwaggerEndpoint(
-    //    "/swagger/LibraryOpenAPISpecificationAuthors/swagger.json", 
-    //    "Library API (Authors)");
-    //setupAction.SwaggerEndpoint(
-    //    "/swagger/LibraryOpenAPISpecificationBooks/swagger.json", 
-    //    "Library API (Books)");
-    setupAction.RoutePrefix = string.Empty;
+
 });
 
 app.UseHttpsRedirection();
+
+app.UseStaticFiles();
 
 app.UseAuthentication();
 
