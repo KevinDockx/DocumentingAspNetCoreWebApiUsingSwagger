@@ -9,19 +9,12 @@ namespace Library.API.Controllers;
 [Route("api/v{version:apiVersion}/authors")]
 [ApiController]
 [ApiVersion(2.0)]
-public class AuthorsControllerSecondVersion : ControllerBase
+public class AuthorsControllerSecondVersion(
+    IAuthorRepository authorsRepository,
+    IMapper mapper) : ControllerBase
 {
-    private readonly IAuthorRepository _authorsRepository;
-    private readonly IMapper _mapper;
-
-    public AuthorsControllerSecondVersion(
-        IAuthorRepository authorsRepository,
-        IMapper mapper)
-    {
-        _authorsRepository = authorsRepository;
-        _mapper = mapper;
-    }
-
+    private readonly IAuthorRepository _authorsRepository = authorsRepository;
+    private readonly IMapper _mapper = mapper;
 
     /// <summary>
     /// Get a list of authors, V2

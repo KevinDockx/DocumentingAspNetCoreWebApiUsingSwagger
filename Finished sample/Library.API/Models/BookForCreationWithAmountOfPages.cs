@@ -1,7 +1,6 @@
-﻿namespace Library.API.Models
-{
-    public class BookForCreationWithAmountOfPages : BookForCreation
-    { 
-        public int AmountOfPages { get; set; }
-    }
+﻿namespace Library.API.Models;
+
+public class BookForCreationWithAmountOfPages : BookForCreation
+{ 
+    public int AmountOfPages { get; set; }
 }

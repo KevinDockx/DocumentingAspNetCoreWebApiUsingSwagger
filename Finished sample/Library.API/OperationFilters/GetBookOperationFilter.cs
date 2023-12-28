@@ -2,30 +2,29 @@
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace Library.API.OperationFilters
+namespace Library.API.OperationFilters;
+
+public class GetBookOperationFilter : IOperationFilter
 {
-    public class GetBookOperationFilter : IOperationFilter
+    public void Apply(OpenApiOperation operation,
+        OperationFilterContext context)
     {
-        public void Apply(OpenApiOperation operation,
-            OperationFilterContext context)
+        if (operation.OperationId != "GetBook")
         {
-            if (operation.OperationId != "GetBook")
-            {
-                return;
-            }
-            if (operation.Responses.Any(response =>
-                response.Key == StatusCodes.Status200OK.ToString()))
-            {
-                var schema = context.SchemaGenerator.GenerateSchema(
-                    typeof(BookWithConcatenatedAuthorName),
-                    context.SchemaRepository);
+            return;
+        }
+        if (operation.Responses.Any(response =>
+            response.Key == StatusCodes.Status200OK.ToString()))
+        {
+            var schema = context.SchemaGenerator.GenerateSchema(
+                typeof(BookWithConcatenatedAuthorName),
+                context.SchemaRepository);
 
-                operation.Responses[StatusCodes.Status200OK.ToString()]
-                    .Content.Add(
-                        "application/vnd.marvin.bookwithconcatenatedauthorname+json",
-                        new OpenApiMediaType() { Schema = schema });
+            operation.Responses[StatusCodes.Status200OK.ToString()]
+                .Content.Add(
+                    "application/vnd.marvin.bookwithconcatenatedauthorname+json",
+                    new OpenApiMediaType() { Schema = schema });
 
-            }
         }
     }
 }

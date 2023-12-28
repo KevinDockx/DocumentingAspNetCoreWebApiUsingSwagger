@@ -61,6 +61,18 @@
             <returns>An ActionResult of type Book</returns>
             <response code="422">Validation error</response>
         </member>
+        <member name="T:Library.API.Migrations.InitialMigration">
+            <inheritdoc />
+        </member>
+        <member name="M:Library.API.Migrations.InitialMigration.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:Library.API.Migrations.InitialMigration.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:Library.API.Migrations.InitialMigration.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
         <member name="T:Library.API.Models.Author">
             <summary>
             An author with Id, FirstName and LastName fields

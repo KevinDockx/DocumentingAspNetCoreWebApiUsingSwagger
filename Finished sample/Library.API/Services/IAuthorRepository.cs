@@ -1,17 +1,16 @@
 ﻿using Library.API.Entities;
 
-namespace Library.API.Services
+namespace Library.API.Services;
+
+public interface IAuthorRepository
 {
-    public interface IAuthorRepository
-    {
-        Task<bool> AuthorExistsAsync(Guid authorId);
+    Task<bool> AuthorExistsAsync(Guid authorId);
 
-        Task<IEnumerable<Author>> GetAuthorsAsync();
+    Task<IEnumerable<Author>> GetAuthorsAsync();
 
-        Task<Author?> GetAuthorAsync(Guid authorId);
+    Task<Author?> GetAuthorAsync(Guid authorId);
 
-        void UpdateAuthor(Author author);
+    void UpdateAuthor(Author author);
 
-        Task<bool> SaveChangesAsync();
-    }
+    Task<bool> SaveChangesAsync();
 }
