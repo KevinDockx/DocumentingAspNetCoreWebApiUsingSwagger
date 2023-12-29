@@ -2,8 +2,7 @@
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 
 namespace Library.API
-{
-#nullable disable
+{ 
     public static class CustomConventions
     {
         [ProducesDefaultResponseType]
@@ -18,6 +17,5 @@ namespace Library.API
                 ApiConventionTypeMatchBehavior.Any)] 
             object model)
         { }
-    }
-#nullable restore
+    } 
 }
